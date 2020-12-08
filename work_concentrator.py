@@ -1,12 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Work Concentrator
+# Copyright (c) 2020 Denys Zaluzhnyi
+
+
 import tkinter as tk
-import subprocess
 
 from dataclasses import dataclass
 from typing import Optional, List
-from os import path
 
-# from pynotifier import Notification
-
+from notification.notification import WorkNotification
 
 # ---------------------------- CONSTANTS ------------------------------- #
 PINK = "#e2979c"
@@ -24,19 +28,12 @@ LONG_BREAK_MIN = 20
 SECONDS_IN_MINUTE = 60
 
 timer = None
+notificator = WorkNotification()
 # ---------------------------- TIMER RESET ------------------------------- #
 
 def send_notification(text):
     print('Work Concentrator: ', text)
-    # cur_directory = path.dirname(__file__) 
-    # Notification(
-    #     title='Work Scheduler',
-    #     description=text,
-    #     # On Windows .ico is required, on Linux - .png
-    #     icon_path=path.join(cur_directory, 'media', 'icon.png'),
-    #     duration=5 * 60,
-    #     urgency=Notification.URGENCY_LOW
-    # ).send()
+    notificator.notify(text)
 
 
 def reset_timer():
@@ -98,7 +95,6 @@ start_state = WorkingState.connect_states([
     WorkingState.workin(),
     WorkingState.short_break(),
     WorkingState.workin(),
-    WorkingState.short_break(),
     WorkingState.long_break()
 ])
 
@@ -114,7 +110,7 @@ title_color_mapping = {
 def start_timer():
     global current_state
     global passed_working_stages
-    
+
     if timer:
         return
 
